@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom"
-import Footer from "../Components/Footer"
+import Footer from "../components/Footer"
 
 function ProductPage() {
     const sellerData = [

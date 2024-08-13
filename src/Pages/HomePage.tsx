@@ -1,11 +1,11 @@
-import FeatureBanner from "../Components/FeatureBanner";
-import Footer from "../Components/Footer";
-import GetUpdate from "../Components/GetUpdate";
-import Header from "../Components/Header";
+import FeatureBanner from "../components/FeatureBanner";
+import Footer from "../components/Footer";
+import GetUpdate from "../components/GetUpdate";
+import Header from "../components/Header";
 // import Nav from "../Components/Nav";
-import NewArrival from "../Components/NewArrival";
-import Service from "../Components/Service";
-import Shop from "../Components/Shop";
+import NewArrival from "../components/NewArrival";
+import Service from "../components/Service";
+import Shop from "../components/Shop";
 
 function HomePage() {
   return (

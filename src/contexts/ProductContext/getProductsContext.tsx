@@ -1,5 +1,5 @@
 import React, { useEffect, useState, ReactNode } from "react";
-import { getProducts } from "../_requests";
+import { getProducts } from "../../core/_requests";
 
 export const ProductsContext = React.createContext<ProductModel[] | null>(null);
 

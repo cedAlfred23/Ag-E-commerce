@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom"
-import Footer from "../Components/Footer"
-import GetUpdate from "../Components/GetUpdate"
+import Footer from "../components/Footer"
+import GetUpdate from "../components/GetUpdate"
 
 function CartPage() {
     const user  =  localStorage.getItem('user')

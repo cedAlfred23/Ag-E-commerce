@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { useContext } from "react";
-import { ProductsContext } from "../core/ProductContext/getProductsContext";
+import { ProductsContext } from "../contexts/ProductContext/getProductsContext";
 
 // // export interface Product {
 // //   category: string;

@@ -8,8 +8,8 @@ import { toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 
 const initialValues = {
-  username: "cgbaguidi",
-  password: "test@django123",
+  username: "cedAlfred",
+  password: "test123",
 };
 
 const loginSchema = Yup.object().shape({
@@ -43,10 +43,10 @@ function LoginModal({
         const loginResponse = await login(values.username, values.password);
 
        console.log("The loginResponse received on login.tsx is ", loginResponse);
-        localStorage.setItem('tokens', JSON.stringify(loginResponse));
+       localStorage.setItem('tokens', JSON.stringify(loginResponse));
 
-        const tokens = JSON.parse(localStorage.getItem('tokens') || '{}');
-        console.log("The tokens in local storage is ", tokens);
+        const tokens = await JSON.parse(localStorage.getItem('tokens') || '{}');
+        console.log("The tokens in local storage is ", tokens.access);
 
         const { data: user } = await getUserByToken(tokens.access);
         console.log("The user received is ", user);
