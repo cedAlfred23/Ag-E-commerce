@@ -22,6 +22,7 @@ export const ProductsProvider: React.FC<{ children: ReactNode }> = ({ children }
     const [products, setProducts] = useState<ProductModel[]>([]);
 
     useEffect(() => {
+        console.log('fetching products on getProduct context')
         const fetchProducts = async () => {
             const products = await getProducts();
             setProducts(products);

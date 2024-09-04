@@ -1,8 +1,18 @@
+import { toast } from "react-toastify";
+
 function ProfileBadge() {
   const user = JSON.parse(localStorage.getItem("user") || "{}");
-  const logout = () => {
+  const logout = async () => {
     localStorage.removeItem('user');
-    localStorage.removeItem('token');
+    localStorage.removeItem('tokens');
+    localStorage.removeItem('favorites');
+
+    const tokens = await JSON.parse(localStorage.getItem('tokens') || '{}');
+    console.log('the token after logout is', tokens)
+
+    const favorite = await JSON.parse(localStorage.getItem('favorites') || '{}');
+    console.log('the favorites after logout is', favorite)
+    toast.success('Logged out successfully');
   }
 
   return (

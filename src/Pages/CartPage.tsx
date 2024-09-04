@@ -1,10 +1,28 @@
 import { Link } from "react-router-dom"
 import Footer from "../components/Footer"
-import GetUpdate from "../components/GetUpdate"
+import { useContext, useEffect } from "react"
+import { CartContext } from "../contexts/ProductContext/getCartContext";
 
 function CartPage() {
-    const user  =  localStorage.getItem('user')
-   console.log('The current username in the system is ', user)
+
+   const cartProducts = useContext(CartContext);
+
+   useEffect(() => {
+    const fetchCartItem = async () => {
+      try {
+
+        console.log("Hello Executing Favorite function",);
+
+        // const fav = JSON.parse(localStorage.getItem("favorites") || "[]");
+        // console.log("The favorites in local storage are: ", fav);
+      } catch (error) {
+        console.error("Failed to fetch product details:", error);
+      }
+    };
+
+    fetchCartItem();
+  }, [cartProducts]);
+  
   return (
     <>
         {/* <!--hero or header--> */}
@@ -42,47 +60,16 @@ function CartPage() {
                                     <th className="font-semibold text-left">Subtotal</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            {cartProducts?.map((item, index)=>(
+                                <tbody key={index}>
                                 <tr className="border-t border-gray-300">
                                     <td className="py-4">
                                         <div className="items-center block lg:flex">
-                                            <img className="w-16 h-16 mb-4 md:mr-4" src="https://via.placeholder.com/150" alt="Product image" />
-                                            <span className="font-semibold">Product name</span>
+                                            <img className="w-16 h-16 mb-4 md:mr-4" src={item.product.image} alt="Product image" />
+                                            <span className="font-semibold">{item.product.name}</span>
                                         </div>
                                     </td>
-                                    <td className="py-4">$0.00</td>
-                                    <td className="py-4">
-                                        <div className="flex items-center">
-                                            <input className=" w-[50px] h-[40px] md:w-[70px] md:h-[45px] bg-gray-100 text-center rounded outline-none" type="number" min="1" value="1" />
-                                        </div>
-                                    </td>
-                                    <td className="py-4">$0.00</td>
-                                </tr>
-                                {/* <!-- More product rows --> */}
-                                <tr className="border-t border-gray-300">
-                                    <td className="py-4">
-                                        <div className="items-center block lg:flex">
-                                            <img className="w-16 h-16 mb-4 md:mr-4" src="https://via.placeholder.com/150" alt="Product image" />
-                                            <span className="font-semibold">Product name</span>
-                                        </div>
-                                    </td>
-                                    <td className="py-4">$0.00</td>
-                                    <td className="py-4">
-                                        <div className="flex items-center">
-                                            <input className=" w-[50px] h-[40px] md:w-[70px] md:h-[45px] bg-gray-100 text-center rounded outline-none" type="number" min="1" value="1" />
-                                        </div>
-                                    </td>
-                                    <td className="py-4">$0.00</td>
-                                </tr>
-
-                                <tr className="border-t border-gray-300">
-                                    <td className="py-4">
-                                        <div className="items-center block lg:flex">
-                                            <img className="w-16 h-16 mb-4 md:mr-4" src="https://via.placeholder.com/150" alt="Product image" />
-                                            <span className="font-semibold">Product name</span>
-                                        </div>
-                                    </td>
-                                    <td className="py-4">$0.00</td>
+                                    <td className="py-4">$ {item.product.price}</td>
                                     <td className="py-4">
                                         <div className="flex items-center">
                                             <input className=" w-[50px] h-[40px] md:w-[70px] md:h-[45px] bg-gray-100 text-center rounded outline-none" type="number" min="1" value="1" />
@@ -91,6 +78,7 @@ function CartPage() {
                                     <td className="py-4">$0.00</td>
                                 </tr>
                             </tbody>
+                            ))}
                         </table>
                     </div>
                 </div>
@@ -125,7 +113,7 @@ function CartPage() {
         </div>
     </div>
 
-<GetUpdate />
+{/* <GetUpdate /> */}
 <Footer />
     </>
   )

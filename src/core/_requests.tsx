@@ -9,20 +9,20 @@ interface CustomJwtPayload extends JwtPayload {
   user_id: any; // Define the type of user_data property
 }
 
-export const GET_USER_BY_ACCESSTOKEN_URL = `${API_URL}auth/user`;
-export const LOGIN_URL = `${API_URL}auth/token/`;
-export const REGISTER_URL = `${API_URL}auth/user/register/`;
-export const REFRESH_TOKEN_URL = `${API_URL}auth/token/refresh/`;
+const GET_USER_BY_ACCESSTOKEN_URL = `${API_URL}auth/user/`;
+const LOGIN_URL = `${API_URL}auth/token/`;
+const REGISTER_URL = `${API_URL}auth/user/register/`;
+const REFRESH_TOKEN_URL = `${API_URL}auth/token/refresh/`;
 
 const tokens = JSON.parse(localStorage.getItem("tokens") || "{}");
 const access_token = tokens.access;
-console.log("The access token in local storage is ", access_token);
 const refresh_token = tokens.refresh;
-console.log("The refresh token in local storage is ", refresh_token);
+// console.log("The access token in local storage is ", access_token);
+// console.log("The refresh token in local storage is ", refresh_token);
 
 async function isTokenValid(token: string): Promise<boolean> {
   // const access_token = await JSON.parse(localStorage.getItem("access_token") || "{}");
-  console.log('The token is ', token);
+  console.log("The token is ", token);
   try {
     const decodedToken: CustomJwtPayload = jwtDecode(token);
     const currentTime = Date.now().valueOf() / 1000;
@@ -70,7 +70,7 @@ async function refresh_token_api() {
 }
 
 // Server should return AuthModel
-export async function login(username: string, password: string) {
+export async function login(email: string, password: string) {
   console.log("The login url is " + LOGIN_URL);
   const response = await axios.post(LOGIN_URL, {
     headers: {
@@ -79,23 +79,23 @@ export async function login(username: string, password: string) {
       HeaderKey: "HeaderValue",
       "Access-Control-Allow-Origin": "*",
     },
-    username,
+    email,
     password,
   });
   return response.data;
 }
 
 export async function getUserByToken(userToken: string) {
-  refresh_token_api();
-  const decoded = jwtDecode<CustomJwtPayload>(userToken);
-  const userId = decoded.user_id;
+  // refresh_token_api();
+  // const decoded = jwtDecode<CustomJwtPayload>(userToken);
+  // const userId = decoded.user_id;
 
   try {
-    const response = await axios.get<UserModel>(
-      GET_USER_BY_ACCESSTOKEN_URL + "/" + userId + "/",
+    const response = await axios.get(
+      GET_USER_BY_ACCESSTOKEN_URL,
       {
         headers: {
-          Authorization: `Bearer ${access_token}`, // Add the token to the Authorization header
+          Authorization: `Bearer ${userToken}`, // Add the token to the Authorization header
         },
       }
     );
@@ -130,14 +130,162 @@ export async function register(
 }
 
 export async function getProducts() {
+  console.log("The get products url is " + `${API_URL}shop/products/`);
+  console.log("Calling get products");
+  // refresh_token_api();
+  try {
+    const response = await axios.get(`${API_URL}shop/products/`, {
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+    });
+    console.log("The response for products is ", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Error getting products", error);
+    throw error;
+  }
+  // console.log("Response for product to be sent", response.data);
+  // return await response.data;
+}
+
+export async function getProductById(productId: string) {
+  console.log("The get products url is " + `${API_URL}shop/products/${productId}/`);
+  console.log("Calling get products", tokens.access);
   refresh_token_api();
-  const response = await axios.get(`${API_URL}shop/products/`, {
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${access_token}`,
-    },
-  });
-  console.log("Response for product to be sent", response.data);
-  return await response.data;
+  try {
+    const response = await axios.get(`${API_URL}shop/products/${productId}/`, {
+      headers: {
+        Accept: "application/json",
+        Authorization: `Bearer ${tokens.access}`,
+        "Content-Type": "application/json", // Add the token to the Authorization header
+      },
+    });
+    console.log("The response for products is ", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Error getting products", error);
+    throw error;
+  }
+  // console.log("Response for product to be sent", response.data);
+  // return await response.data;
+}
+
+export async function addToWishlist(productId: string){
+  console.log("The addToWishlist url is " + `${API_URL}wishlist/add/`);
+  console.log("Calling addToWishlist");
+  refresh_token_api();
+  try {
+    const response = await axios.post(
+      `${API_URL}wishlist/add/`, 
+      {
+        product: productId,
+      },
+      {
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${tokens.access}`,
+      },
+    });
+    console.log("The response for addToWishlist is ", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Error addToWishlist products", error);
+    throw error;
+  }
+}
+
+export async function getWishlist(){
+  console.log("The get products url is " + `${API_URL}wishlist/list/`);
+  console.log("Calling get products");
+  refresh_token_api();
+  try {
+    const response = await axios.get(`${API_URL}wishlist/list/`, {
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${tokens.access}`,
+      },
+    });
+    console.log("The response for products is ", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Error getting products", error);
+    throw error;
+  }
+  // console.log("Response for product to be sent", response.data);
+  // return await response.data;
+}
+
+export async function addToCart(productId: string, quantity: number) {
+  console.log("The addToCart url is " + `${API_URL}cart/cart/`);
+  console.log("Calling addToCart with arguments", productId, quantity);
+  
+  try {
+    const response = await axios.post(
+      `${API_URL}cart/cart/`,
+      {
+        product: productId,
+        quantity: quantity,
+      },
+      {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${tokens.access}`,
+        },
+      }
+    );
+    console.log("The response for addToCart is ", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Error adding product to cart", error);
+    throw error;
+  }
+}
+
+export async function getCart(){
+  console.log("The getCart url is " + `${API_URL}cart/cart/list/`);
+  console.log("Calling getCart");
+  // refresh_token_api();
+  try {
+    const response = await axios.get(`${API_URL}cart/cart/list/`, {
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${tokens.access}`,
+      },
+    });
+    console.log("The response for getCart is ", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Error getCart products", error);
+    throw error;
+  }
+  // console.log("Response for product to be sent", response.data);
+  // return await response.data;
+}
+
+export async function getOrder(){
+  console.log("The getCart url is " + `${API_URL}order/seller-order-history/`);
+  console.log("Calling getOrders");
+  // refresh_token_api();
+  try {
+    const response = await axios.get(`${API_URL}order/seller-order-history/`, {
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${tokens.access}`,
+      },
+    });
+    console.log("The response for getOrders is ", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Error getOrders products", error);
+    throw error;
+  }
+  // console.log("Response for product to be sent", response.data);
+  // return await response.data;
 }

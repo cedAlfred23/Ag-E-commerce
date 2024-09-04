@@ -1,19 +1,19 @@
 import { useAuth } from "../core/Auth";
 import { useState } from "react";
 import { useFormik } from "formik";
-import { getUserByToken, login } from "../core/_requests";
+import { getUserByToken, getWishlist, login } from "../core/_requests";
 import * as Yup from "yup";
 import clsx from "clsx";
 import { toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 
 const initialValues = {
-  username: "cedAlfred",
-  password: "test123",
+  email: "test@admin.com",
+  password: "1234",
 };
 
 const loginSchema = Yup.object().shape({
-  username: Yup.string()
+  email: Yup.string()
     // .email("Wrong email format")
     .min(3, "Minimum 3 symbols")
     .max(50, "Maximum 50 symbols")
@@ -33,6 +33,7 @@ function LoginModal({
 }) {
   const [loading, setLoading] = useState(false);
   const { saveAuth, setCurrentUser } = useAuth();
+  const notify = () => toast("Wow so easy!");
 
   const formik = useFormik({
     initialValues,
@@ -40,26 +41,35 @@ function LoginModal({
     onSubmit: async (values, { setStatus, setSubmitting }) => {
       setLoading(true);
       try {
-        const loginResponse = await login(values.username, values.password);
+        console.log("1");
+        const loginResponse = await login(values.email, values.password);
 
        console.log("The loginResponse received on login.tsx is ", loginResponse);
        localStorage.setItem('tokens', JSON.stringify(loginResponse));
 
         const tokens = await JSON.parse(localStorage.getItem('tokens') || '{}');
-        console.log("The tokens in local storage is ", tokens.access);
-
-        const { data: user } = await getUserByToken(tokens.access);
-        console.log("The user received is ", user);
+        // console.log("The tokens in local storage is ", tokens.access);
+        console.log("2 +", tokens.access);
 
         
+        const { data: user } = await getUserByToken(tokens.access);
+        console.log("The user received is ", user);
+        console.log("3");
+
+        const favorite = await getWishlist();
+        localStorage.setItem('favorites', JSON.stringify(favorite));
+        const fav = await JSON.parse(localStorage.getItem('favorites') || '{}');
+        console.log("The favorites in local storage is ", fav);
+        
         localStorage.setItem('user', JSON.stringify(user));
-
+        console.log("4");
         const currentUser = JSON.parse(localStorage.getItem("user") || "{}");
-        console.log('The current username in the system is ', currentUser.username)
-
+        console.log('The current email in the system is ', currentUser.email)
+        console.log("4");
         setLoading(false);
         onClose()
         toast.success('Logged in successfully');
+        notify
       } catch (error) {
         console.error(error);
         saveAuth(undefined);
@@ -69,6 +79,7 @@ function LoginModal({
       }
     },
   });
+
   return (
     <div>
       {/* <!-- Login modal --> */}
@@ -121,25 +132,25 @@ function LoginModal({
           {/* begin::Form group */}
           <div className="mb-8 fv-row">
             <label className="block mb-2 text-sm font-medium text-black">
-              Username
+              email
             </label>
             <input
-              placeholder="Username"
-              {...formik.getFieldProps("username")}
+              placeholder="email"
+              {...formik.getFieldProps("email")}
               className={clsx(
                 'form-control bg-transparent border sm:text-sm rounded-lg focus:ring-[#4CBB17] focus:border-[#4CBB17] block w-full p-2.5 border-gray-500 dark:placeholder-gray-400 text-black',
-                {'is-invalid': formik.touched.username && formik.errors.username},
+                {'is-invalid': formik.touched.email && formik.errors.email},
                 {
-                  'is-valid': formik.touched.username && !formik.errors.username,
+                  'is-valid': formik.touched.email && !formik.errors.email,
                 }
               )}
               required
-              type="username"
+              type="email"
               autoComplete="off"
             />
-            {formik.touched.username && formik.errors.username && (
+            {formik.touched.email && formik.errors.email && (
               <div className="fv-plugins-message-container">
-                <span role='alert'>{formik.errors.username}</span>
+                <span role='alert'>{formik.errors.email}</span>
               </div>
             )}
           </div>

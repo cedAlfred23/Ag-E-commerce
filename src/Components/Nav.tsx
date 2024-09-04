@@ -95,9 +95,22 @@ function Nav() {
             </a>
           )}
           {/* <!--cart--> */}{" "}
+          <Link to="/favorites" className="nav-cart">
+            <i
+                      id="like"
+                      className={`fa fa-heart px-1.5 sm:px-3 text-sm lg:text-lg`}
+                      // ${isFavorite(products) ? "text-green-500" : "text-black"}
+                    ></i>
+          </Link>
           <Link to="/cartpage" className="nav-cart">
             <i className="fa-solid fa-cart-shopping"></i>
           </Link>
+          
+          
+          <Link to="/myorders" className="nav-cart">
+            <i className="fa-solid fa-circle-info"></i>
+          </Link>
+          
         </div>
       </nav>
 

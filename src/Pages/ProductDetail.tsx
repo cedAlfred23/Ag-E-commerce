@@ -1,7 +1,39 @@
+import { useParams } from "react-router-dom";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
+import { useState, useEffect } from "react";
+import { addToWishlist, getProductById } from "../core/_requests";
 
 function ProductDetail() {
+  const {productId} = useParams();
+  // const [isDone, setIsDone] = useState(false);
+  const [productDetails, setProductDetails] = useState(null);
+  
+  useEffect(() => {
+    console.log("Product ID from URL:", productId);
+    const fetchProductDetails = async () => {
+      try {
+        console.log("Retrieving details 1", productId)
+        const details = await getProductById(productId||'');
+        // const wish = await addToWishlist(productId||'');
+        // console.log("The response for products wish is ", wish);
+        setProductDetails(details);
+        console.log("Retrieving details 2")
+        console.log("The product details are ", details);
+      } catch (error) {
+        console.error('Failed to fetch product details:', error);
+      }
+    };
+
+    if (productId) {
+      fetchProductDetails();
+    }
+  }, [productId]);
+
+  if (!productDetails) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <div>
       <Header />
@@ -27,14 +59,14 @@ function ProductDetail() {
             </svg>
           </a>
           <a href="#" className="text-[#4CBB17] font-bold text-sm md:text-lg">
-            Lemon
+          {productDetails['name']}
           </a>
           <div className="flex flex-col items-center justify-center -mx-4 md:flex-row">
             <div className="px-4 md:flex-1">
               <div className="h-[350px] mb-4">
                 <img
                   className="object-cover object-center w-full h-full cursor-pointer"
-                  src="images/lemon.webp"
+                  src={productDetails['image']}
                 />
               </div>
               <div className="flex mb-4 -mx-2">
@@ -52,23 +84,19 @@ function ProductDetail() {
             </div>
             <div className="px-4 md:flex-1">
               <h2 className="text-lg lg:text-4xl text-[#4CBB17] font-bold mb-2">
-                Lemon
+              {productDetails['name']}
               </h2>
               <p className="mb-4 text-sm text-black lg:text-base">
-                A diet rich in vegetables and fruits can lower blood pressure,
-                reduce the risk of heart disease and stroke, prevent some types
-                of cancer, lower risk of eye and digestive problems, and have a
-                positive effect upon blood sugar, which can help keep appetite
-                in check.
+              {productDetails['description']}
               </p>
               <div className="flex mb-4">
                 <div className="mr-4">
                   <span className="font-bold">Price:</span>
-                  <span className="text-[#4CBB17] font-bold">$0</span>
+                  <span className="text-[#4CBB17] font-bold"> $ {productDetails['price']}</span>
                 </div>
                 <div>
                   <span className="font-bold">Availability:</span>
-                  <span className="text-[#4CBB17] font-bold">In Stock</span>
+                  <span className="text-[#4CBB17] font-bold">{productDetails['stock']} In Stock</span>
                 </div>
               </div>
               <div className="mb-4">
@@ -88,7 +116,7 @@ function ProductDetail() {
                   <input
                     className="w-[70px] h-[45px] bg-gray-200 text-center rounded outline-none"
                     type="number"
-                    min="1"
+                    defaultValue="1"
                   />
                 </div>
               </div>
@@ -97,11 +125,7 @@ function ProductDetail() {
                   Product Description
                 </span>
                 <p className="mt-2 text-sm text-black lg:text-base">
-                  They are a great source of vitamin C, potassium, folate, and
-                  vitamin K. Usually red when mature, tomatoes can also come in
-                  a variety of colors, including yellow, orange, green, and
-                  purple. What is more, many subspecies of tomatoes exist with
-                  different shapes and flavor
+                {productDetails['description']}
                 </p>
               </div>
             </div>

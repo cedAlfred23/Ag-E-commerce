@@ -15,7 +15,7 @@ function HomePage() {
       <Service />
       <Shop />
       <GetUpdate />
-      <NewArrival />
+      {/* <NewArrival /> */}
       <Footer />
     </>
   );
