@@ -218,6 +218,28 @@ export async function getWishlist(){
   // console.log("Response for product to be sent", response.data);
   // return await response.data;
 }
+export async function removeFromWishlist(productId: string){
+  console.log("The get products url is " + `${API_URL}wishlist/remove/${productId}/`);
+  console.log("Calling get products");
+  refresh_token_api();
+  try {
+    const response = await axios.delete(`${API_URL}wishlist/remove/${productId}/`, {
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${tokens.access}`,
+      },
+    });
+    console.log("The response for products is ", response.data);
+    window.location.reload();
+    return response.data;
+  } catch (error) {
+    console.error("Error getting products", error);
+    throw error;
+  }
+  // console.log("Response for product to be sent", response.data);
+  // return await response.data;
+}
 
 export async function addToCart(productId: string, quantity: number) {
   console.log("The addToCart url is " + `${API_URL}cart/cart/`);
@@ -268,7 +290,51 @@ export async function getCart(){
   // return await response.data;
 }
 
-export async function getOrder(){
+export async function deleteFromCart(productId: string){
+  console.log("The getCart url is " + `${API_URL}cart/cart/${productId}/delete/`);
+  console.log("Calling getCart");
+  // refresh_token_api();
+  try {
+    const response = await axios.get(`${API_URL}cart/cart/${productId}/delete/`, {
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${tokens.access}`,
+      },
+    });
+    console.log("The response for getCart is ", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Error getCart products", error);
+    throw error;
+  }
+  // console.log("Response for product to be sent", response.data);
+  // return await response.data;
+}
+
+export async function checkout(){
+  console.log("The getCart url is " + `${API_URL}order/checkout/`);
+  console.log("Calling getOrders");
+  // refresh_token_api();
+  try {
+    const response = await axios.post(`${API_URL}order/checkout/`, {
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${tokens.access}`,
+      },
+    });
+    console.log("The response for getOrders is ", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Error getOrders products", error);
+    throw error;
+  }
+  // console.log("Response for product to be sent", response.data);
+  // return await response.data;
+}
+
+export async function getOrderHistory(){
   console.log("The getCart url is " + `${API_URL}order/seller-order-history/`);
   console.log("Calling getOrders");
   // refresh_token_api();

@@ -58,18 +58,3 @@ function OrderPage() {
 }
 
 export default OrderPage
-
-
-// # Development environment variables
-// SECRET_KEY=your_dev_secret_key
-// ALLOWED_HOSTS=localhost,127.0.0.1  # Replace with your dev hosts
-
-
-// DB_NAME=your_database_name
-// DB_USER=your_database_user
-// DB_PASSWORD=your_database_password
-// DB_HOST=your_database_host  
-// DB_PORT=your_database_port  
-
-// GOOGLE_CLIENT_ID=your_google_client_id
-// GOOGLE_SECRET=your_google_secret

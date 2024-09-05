@@ -56,7 +56,7 @@ function CartPage() {
                                 <tr className="items-center justify-between px-5 m-auto">
                                     <th className="font-semibold text-left w-36 lg:w-60">Product</th>
                                     <th className="w-24 font-semibold text-left lg:w-36">Price</th>
-                                    <th className="font-semibold text-left">Quantity</th>
+                                    {/* <th className="font-semibold text-left">Quantity</th> */}
                                     <th className="font-semibold text-left">Subtotal</th>
                                 </tr>
                             </thead>
@@ -70,12 +70,12 @@ function CartPage() {
                                         </div>
                                     </td>
                                     <td className="py-4">$ {item.product.price}</td>
-                                    <td className="py-4">
+                                    {/* <td className="py-4">
                                         <div className="flex items-center">
-                                            <input className=" w-[50px] h-[40px] md:w-[70px] md:h-[45px] bg-gray-100 text-center rounded outline-none" type="number" min="1" value="1" />
+                                            <input className=" w-[50px] h-[40px] md:w-[70px] md:h-[45px] bg-gray-100 text-center rounded outline-none" type="number" min="1" value="" />
                                         </div>
-                                    </td>
-                                    <td className="py-4">$0.00</td>
+                                    </td> */}
+                                    <td className="py-4">$ {item.product.price}</td>
                                 </tr>
                             </tbody>
                             ))}

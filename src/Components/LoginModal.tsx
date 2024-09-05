@@ -70,6 +70,7 @@ function LoginModal({
         onClose()
         toast.success('Logged in successfully');
         notify
+        window.location.reload();
       } catch (error) {
         console.error(error);
         saveAuth(undefined);

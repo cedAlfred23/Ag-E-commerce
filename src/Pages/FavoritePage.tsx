@@ -2,14 +2,13 @@ import { useContext, useEffect } from "react";
 import Footer from "../components/Footer";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
-import { addToWishlist, getCart } from "../core/_requests";
+import { addToWishlist, getCart, removeFromWishlist } from "../core/_requests";
 import { FavoriteProducts } from "../contexts/ProductContext/getFavoritesProducts";
 
 function FavoritePage() {
   const products = useContext(FavoriteProducts);
-  useEffect(() => {
+  useEffect(() => {}, [products]);
 
-  }, [products])
   return (
     <div>
       <header
@@ -38,71 +37,87 @@ function FavoritePage() {
       </header>
 
       <div className="grid grid-cols-2 gap-10 py-8 m-auto mx-8 my-2 mb-12 md:grid-cols-3 lg:grid-cols-4">
-            {/* <!-- CARD 1 --> */}
-            {products?.map((item, index) => (
-              <div
-                key={index}
-                className="flex flex-col overflow-hidden rounded shadow-lg"
+        {/* <!-- CARD 1 --> */}
+        {products?.map((item, index) => (
+          <div
+            key={index}
+            className="flex flex-col overflow-hidden rounded shadow-lg"
+          >
+            <Link to={`/productdetail/${item.id}`}>
+              <div className="relative">
+                <a href={item.linkToDetail}>
+                  <img className=" w-96 h-60" src={item.product.image} />
+                  <div className="absolute top-0 bottom-0 left-0 right-0 transition duration-300 bg-gray-300 opacity-25 hover:bg-transparent"></div>
+                </a>
+              </div>
+              <div className="px-6 py-4 mb-auto">
+                <a
+                  href="#"
+                  className="font-medium text-lg hover:text-[#4CBB17] transition duration-500 ease-in-out inline-block mb-2"
+                >
+                  {item.product.name}
+                </a>
+                <p className="text-sm text-gray-500">{item.description}</p>
+                <p className="text-[#4CBB17] text-sm">{item.price}</p>
+              </div>
+            </Link>
+
+            <div className="flex flex-row items-center justify-end px-4 py-3 bg-gray-100 it">
+              <button
+                id="myButton"
+                onClick={async () => {
+                  toast("Wow so easy!");
+                  removeFromWishlist(item.id);
+                  console.log("removed from wishlist");
+                  const favorite = await getCart();
+                  localStorage.setItem("favorites", JSON.stringify(favorite));
+                  const fav = await JSON.parse(
+                    localStorage.getItem("favorites") || "{}"
+                  );
+                  console.log("The favorites in local storage is ", fav);
+                }}
               >
-                <Link to={`/productdetail/${item.id}`}>
-                  <div className="relative">
-                    <a href={item.linkToDetail}>
-                      <img className=" w-96 h-60" src={item.product.image} />
-                      <div className="absolute top-0 bottom-0 left-0 right-0 transition duration-300 bg-gray-300 opacity-25 hover:bg-transparent"></div>
-                    </a>
-                    {/* <a href="product.html">
-                    <div className="text-xs absolute top-0 right-0 bg-[#4CBB17] px-4 py-2 text-white mt-3 mr-3">
-                      {item.category}
-                    </div>
-                  </a> */}
-                  </div>
-                  <div className="px-6 py-4 mb-auto">
-                    <a
-                      href="#"
-                      className="font-medium text-lg hover:text-[#4CBB17] transition duration-500 ease-in-out inline-block mb-2"
-                    >
-                      {item.product.name}
-                    </a>
-                    <p className="text-sm text-gray-500">{item.description}</p>
-                    <p className="text-[#4CBB17] text-sm">{item.price}</p>
-                  </div>
-                </Link>
-                <div className="flex flex-row items-center justify-end px-4 py-3 bg-gray-100 it">
-                  {/* <!--like button--> */}
+                {/* <div className="text-xs absolute top-0 right-0 bg-[#4CBB17] px-4 py-2 text-white mt-3 mr-3">
                   <button
-                    id="myButton"
-                    onClick={async () => {
-                       toast("Wow so easy!");
-                      addToWishlist(item.id);
-                      console.log("added to wishlist");
-                      const favorite = await getCart();
-                      localStorage.setItem(
-                        "favorites",
-                        JSON.stringify(favorite)
-                      );
-                      const fav = await JSON.parse(
-                        localStorage.getItem("favorites") || "{}"
-                      );
-                      console.log("The favorites in local storage is ", fav);
+                    onClick={() => {
+                      removeFromWishlist(item.id);
                     }}
-                  >
-                    <i
+                  > */}
+                    <i className="fa-solid fa-xmark hover:text-green-700"></i>
+                  {/* </button>
+                </div> */}
+              </button>
+              <button
+                id="myButton"
+                onClick={async () => {
+                  toast("Wow so easy!");
+                  addToWishlist(item.id);
+                  console.log("added to wishlist");
+                  const favorite = await getCart();
+                  localStorage.setItem("favorites", JSON.stringify(favorite));
+                  const fav = await JSON.parse(
+                    localStorage.getItem("favorites") || "{}"
+                  );
+                  console.log("The favorites in local storage is ", fav);
+                }}
+              >
+                {/* <i
                       id="like"
                       className={`fa fa-heart px-1.5 sm:px-3 text-sm lg:text-lg`}
                       // ${isFavorite(products) ? "text-green-500" : "text-black"}
-                    ></i>
-                  </button>
-                  {/* <!--cart--> */}
-                  <a
-                    href={"item.linkToDetail"}
-                    className="px-1.5 sm:px-3 text-sm lg:text-lg"
-                  >
-                    <i className="fa-solid fa-cart-shopping hover:text-green-700"></i>
-                  </a>
-                </div>
-              </div>
-            ))}
+                    ></i> */}
+              </button>
+              {/* <!--cart--> */}
+              <a
+                href={item.linkToDetail}
+                className="px-1.5 sm:px-3 text-sm lg:text-lg"
+              >
+                <i className="fa-solid fa-cart-shopping hover:text-green-700"></i>
+              </a>
+            </div>
           </div>
+        ))}
+      </div>
 
       {/* <div className="max-w-screen-xl py-8 m-auto my-2 rounded-lg shadow-md bg-stone-50 w- full md:my-6">
         <div className="grid h-full gap-4 md:grid-cols-2 xl:grid-cols-3">

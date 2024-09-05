@@ -5,6 +5,7 @@ import RegisterModal from "./RegisterModal";
 import { Link, Outlet } from "react-router-dom";
 import { toast } from "react-toastify";
 import ProfileBadge from "./ProfileBadge";
+import profile from '../assets/profile.png';
 
 function Nav() {
   const [isLoginOpen, setIsLoginOpen] = useState(false);
@@ -25,7 +26,6 @@ function Nav() {
   const handleClose = () => {
     setIsLoginOpen(false);
     setIsRegisterOpen(false);
-    toast.success("Logged in successfully");
   };
 
   const handleOpenRegisterAgain = () => {
@@ -44,7 +44,6 @@ function Nav() {
   // };
 
   const user = localStorage.getItem("user");
-  user;
 
   return (
     <>
@@ -88,28 +87,73 @@ function Nav() {
               type="button"
               onClick={handleProfil}
             >
-              <i className="fa-regular fa-user"></i>
-              <div className= {`nav-user ${isProfilOpen ? 'block' : 'hidden'}  flex flex-1 absolute top-20 z-20 w-fit h-fit bg-orange-500 p-10 justify-center items-center rounded-md`} >
+              
+              <img src={profile} alt=""  className="w-8 h-8 border-2 border-green-500 rounded-full shadow-lg "/>
+              <div className= {`nav-user ${isProfilOpen ? 'block' : 'hidden'}  flex  absolute justify-center `} >
               <ProfileBadge />
               </div>
             </a>
           )}
           {/* <!--cart--> */}{" "}
-          <Link to="/favorites" className="nav-cart">
+
+          {!user ? (
+            <a
+              href="#"
+              className="nav-user"
+              type="button"
+              onClick={handleOpenRegister}
+            >
+              <i
+                      id="like"
+                      className={`fa fa-heart px-1.5 sm:px-3 text-sm lg:text-lg`}
+                      // ${isFavorite(products) ? "text-green-500" : "text-black"}
+                    ></i>
+            </a>
+          ) : (
+            <Link to="/favorites" className="nav-cart">
             <i
                       id="like"
                       className={`fa fa-heart px-1.5 sm:px-3 text-sm lg:text-lg`}
                       // ${isFavorite(products) ? "text-green-500" : "text-black"}
                     ></i>
           </Link>
-          <Link to="/cartpage" className="nav-cart">
+          )}
+          
+          {!user ? (
+            <a
+              href="#"
+              className="nav-user"
+              type="button"
+              onClick={handleOpenRegister}
+            >
+              <i className="fa-solid fa-cart-shopping"></i>
+            </a>
+          ) : (
+            <Link to="/cartpage" className="nav-cart">
             <i className="fa-solid fa-cart-shopping"></i>
           </Link>
-          
-          
-          <Link to="/myorders" className="nav-cart">
+          )}
+
+{!user ? (
+            <a
+              href="#"
+              className="nav-user"
+              type="button"
+              onClick={handleOpenRegister}
+            >
+              <i className="fa-solid fa-circle-info"></i>
+            </a>
+          ) : (
+            <Link to="/myorders" className="nav-cart">
             <i className="fa-solid fa-circle-info"></i>
           </Link>
+          )}
+
+
+          
+          
+          
+          
           
         </div>
       </nav>

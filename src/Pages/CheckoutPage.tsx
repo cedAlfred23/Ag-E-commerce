@@ -1,8 +1,89 @@
+import { useContext, useEffect, useState } from "react";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 import NewArrival from "../components/NewArrival";
+import { CartContext } from "../contexts/ProductContext/getCartContext";
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import clsx from "clsx";
+import { checkout } from "../core/_requests";
+import { toast } from "react-toastify";
+
+const checkoutSchema = Yup.object().shape({
+  address_line1: Yup.string()
+    .min(3, "Minimum 3 symbols")
+    .max(50, "Maximum 50 symbols")
+    .required("Email is required"),
+    address_line2: Yup.string()
+    .min(3, "Minimum 3 symbols")
+    .max(50, "Maximum 50 symbols")
+    .required("Password is required"),
+    city: Yup.string()
+    .min(3, "Minimum 3 symbols")
+    .max(50, "Maximum 50 symbols")
+    .required("Password is required"),
+    state: Yup.string()
+    .min(3, "Minimum 3 symbols")
+    .max(50, "Maximum 50 symbols")
+    .required("Password is required"),
+    country: Yup.string()
+    .min(3, "Minimum 3 symbols")
+    .max(50, "Maximum 50 symbols")
+    .required("Password is required"),
+    postal_code: Yup.string()
+    .min(3, "Minimum 3 symbols")
+    .max(50, "Maximum 50 symbols")
+    .required("Password is required"),
+});
+
+const initialValues = {
+  email: "test@admin.com",
+  password: "1234",
+};
 
 function CheckoutPage() {
+  const cartProducts = useContext(CartContext);
+  const [loading, setLoading] = useState(false);
+
+  const formik = useFormik({
+    initialValues,
+    validationSchema: checkoutSchema,
+    onSubmit: async (values, { setStatus, setSubmitting }) => {
+      setLoading(true);
+      try {
+        console.log("1");
+        const loginResponse = await checkout( values.password);
+  
+       console.log("The loginResponse received on login.tsx is ", loginResponse);
+       localStorage.setItem('tokens', JSON.stringify(loginResponse));
+        
+        toast.success('Logged in successfully');
+  
+        window.location.reload();
+      } catch (error) {
+        console.error(error);
+        setStatus("The login details are incorrect");
+        setSubmitting(false);
+        setLoading(false);
+      }
+    },
+  });
+
+   useEffect(() => {
+    const fetchCartItem = async () => {
+      try {
+
+        console.log("Hello Executing Favorite function",);
+
+        // const fav = JSON.parse(localStorage.getItem("favorites") || "[]");
+        // console.log("The favorites in local storage are: ", fav);
+      } catch (error) {
+        console.error("Failed to fetch product details:", error);
+      }
+    };
+
+    fetchCartItem();
+  }, [cartProducts]);
   return (
     <>
       <Header />
@@ -17,126 +98,33 @@ function CheckoutPage() {
                   Order Summary
                 </h2>
                 <div className="mt-10 space-y-6">
+
+                {cartProducts?.map(order => (
                   <div className="grid items-start grid-cols-2">
-                    <div
-                      className="items-center justify-center p-12 overflow-hidden bg-cover rounded-md h-28 w-28 sm:h-36 sm:w-36"
-                      style={{ backgroundImage: "url('/lemon.webp')" }}
-                    ></div>
-                    <div className="pt-6 ml-4 ">
-                      <h3 className="text-base text-[#4CBB17] font-bold">
-                        Product name
-                      </h3>
-                      <ul className="mt-4 space-y-3 text-xs text-black lg:text-sm">
-                        <li className="flex flex-wrap gap-4">
-                          Quantity <span className="ml-auto font-bold">2</span>
-                        </li>
-                        <li className="flex flex-wrap gap-4">
-                          Total Price{" "}
-                          <span className="ml-auto font-bold">$0.00</span>
-                        </li>
-                      </ul>
-                    </div>
+                  <div
+                    className="items-center justify-center p-12 overflow-hidden bg-cover rounded-md h-28 w-28 sm:h-36 sm:w-36"
+                    style={{ backgroundImage: `url(${order.product.image})` }}
+                  ></div>
+                  <div className="pt-6 ml-4">
+                    <h3 className="text-base text-[#4CBB17] font-bold">
+                      {order.product.name}
+                    </h3>
+                    <ul className="mt-4 space-y-3 text-xs text-black lg:text-sm">
+                      <li className="flex flex-wrap gap-4">
+                        Quantity <span className="ml-auto font-bold">${order.product.price}</span>
+                      </li>
+                      <li className="flex flex-wrap gap-4">
+                        Total Price{" "}
+                        <span className="ml-auto font-bold">$0.00</span>
+                      </li>
+                    </ul>
                   </div>
-                  <div className="grid items-start grid-cols-2">
-                    <div
-                      className="items-center justify-center p-12 overflow-hidden bg-cover rounded-md h-28 w-28 sm:h-36 sm:w-36"
-                      style={{ backgroundImage: "url('/lemon.webp')" }}
-                    ></div>
-                    <div className="pt-6 ml-4 ">
-                      <h3 className="text-base text-[#4CBB17] font-bold">
-                        Product name
-                      </h3>
-                      <ul className="mt-4 space-y-3 text-xs text-black lg:text-sm">
-                        <li className="flex flex-wrap gap-4">
-                          Quantity <span className="ml-auto font-bold">2</span>
-                        </li>
-                        <li className="flex flex-wrap gap-4">
-                          Total Price{" "}
-                          <span className="ml-auto font-bold">$0.00</span>
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                  <div className="grid items-start grid-cols-2">
-                    <div
-                      className="items-center justify-center p-12 overflow-hidden bg-cover rounded-md h-28 w-28 sm:h-36 sm:w-36"
-                      style={{ backgroundImage: "url('/lemon.webp')" }}
-                    ></div>
-                    <div className="pt-6 ml-4">
-                      <h3 className="text-base text-[#4CBB17] font-bold">
-                        Product name
-                      </h3>
-                      <ul className="mt-4 space-y-3 text-xs text-black lg:text-sm">
-                        <li className="flex flex-wrap gap-4">
-                          Quantity <span className="ml-auto font-bold">2</span>
-                        </li>
-                        <li className="flex flex-wrap gap-4">
-                          Total Price{" "}
-                          <span className="ml-auto font-bold">$0.00</span>
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                  <div className="grid items-start grid-cols-2">
-                    <div
-                      className="items-center justify-center p-12 overflow-hidden bg-cover rounded-md h-28 w-28 sm:h-36 sm:w-36"
-                      style={{ backgroundImage: "url('/lemon.webp')" }}
-                    ></div>
-                    <div className="pt-6 ml-4">
-                      <h3 className="text-base text-[#4CBB17] font-bold">
-                        Product name
-                      </h3>
-                      <ul className="mt-4 space-y-3 text-xs text-black lg:text-sm">
-                        <li className="flex flex-wrap gap-4">
-                          Quantity <span className="ml-auto font-bold">2</span>
-                        </li>
-                        <li className="flex flex-wrap gap-4">
-                          Total Price{" "}
-                          <span className="ml-auto font-bold">$0.00</span>
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                  <div className="grid items-start grid-cols-2">
-                    <div
-                      className="items-center justify-center p-12 overflow-hidden bg-cover rounded-md h-28 w-28 sm:h-36 sm:w-36"
-                      style={{ backgroundImage: "url('/lemon.webp')" }}
-                    ></div>
-                    <div className="pt-6 ml-4">
-                      <h3 className="text-base text-[#4CBB17] font-bold">
-                        Product name
-                      </h3>
-                      <ul className="mt-4 space-y-3 text-xs text-black lg:text-sm">
-                        <li className="flex flex-wrap gap-4">
-                          Quantity <span className="ml-auto font-bold">2</span>
-                        </li>
-                        <li className="flex flex-wrap gap-4">
-                          Total Price{" "}
-                          <span className="ml-auto font-bold">$0.00</span>
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                  <div className="grid items-start grid-cols-2">
-                    <div
-                      className="items-center justify-center p-12 overflow-hidden bg-cover rounded-md h-28 w-28 sm:h-36 sm:w-36"
-                      style={{ backgroundImage: "url('/lemon.webp')" }}
-                    ></div>
-                    <div className="pt-6 ml-4">
-                      <h3 className="text-base text-[#4CBB17] font-bold">
-                        Product name
-                      </h3>
-                      <ul className="mt-4 space-y-3 text-xs text-black lg:text-sm">
-                        <li className="flex flex-wrap gap-4">
-                          Quantity <span className="ml-auto font-bold">2</span>
-                        </li>
-                        <li className="flex flex-wrap gap-4">
-                          Total Price{" "}
-                          <span className="ml-auto font-bold">$0.00</span>
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
+                </div>
+                ))}
+
+                  
+
+
                 </div>
               </div>
               <div className="absolute left-0 bottom-0 bg-[#4CBB17] w-full p-4">
@@ -151,7 +139,7 @@ function CheckoutPage() {
               Complete your order
             </h2>
             <form className="mt-10">
-              <div>
+              {/* <div>
                 <h3 className="text-lg font-bold text-[#333] mb-6">
                   Personal Details
                 </h3>
@@ -263,12 +251,38 @@ function CheckoutPage() {
                     </svg>
                   </div>
                 </div>
-              </div>
+              </div> */}
               <div className="mt-6">
                 <h3 className="text-lg font-bold text-[#333] mb-6">
                   Shipping Address
                 </h3>
                 <div className="grid gap-6 lg:grid-cols-2">
+                 
+                <div className="mb-8 fv-row">
+            <label className="block mb-2 text-sm font-medium text-black">
+            Shipping Address
+            </label>
+            <input
+              placeholder="email"
+              {...formik.getFieldProps("email")}
+              className={clsx(
+                'form-control bg-transparent border sm:text-sm rounded-lg focus:ring-[#4CBB17] focus:border-[#4CBB17] block w-full p-2.5 border-gray-500 dark:placeholder-gray-400 text-black',
+                {'is-invalid': formik.touched.email && formik.errors.email},
+                {
+                  'is-valid': formik.touched.email && !formik.errors.email,
+                }
+              )}
+              required
+              type="email"
+              autoComplete="off"
+            />
+            {formik.touched.email && formik.errors.email && (
+              <div className="fv-plugins-message-container">
+                <span role='alert'>{formik.errors.email}</span>
+              </div>
+            )}
+          </div>
+                 
                   <input
                     type="text"
                     placeholder="Address Line"

@@ -1,5 +1,5 @@
 import React, { useEffect, useState, ReactNode } from "react";
-import { getOrder } from "../../core/_requests";
+import { getOrderHistory } from "../../core/_requests";
 
 export const OrderContext = React.createContext<ProductModel[] | null>(null);
 
@@ -37,7 +37,7 @@ export const OrderProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     useEffect(() => {
         console.log('fetching products on getProduct context')
         const fetchProducts = async () => {
-            const products = await getOrder();
+            const products = await getOrderHistory();
             setProducts(products);
             console.log('The shop items from getOrderContext are', products)
         };
